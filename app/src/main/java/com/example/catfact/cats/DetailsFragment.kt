@@ -1,19 +1,18 @@
 package com.example.catfact.cats
 
-
 import android.content.Context
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.example.catfact.MainActivity
+
 import com.example.catfact.R
-import kotlinx.android.synthetic.main.fragment_cats.*
+import kotlinx.android.synthetic.main.fragment_details.*
 import javax.inject.Inject
 
-class CatsFragment : Fragment() {
+class DetailsFragment : Fragment() {
 
     @Inject
     lateinit var viewModel: CatsViewModel
@@ -28,7 +27,7 @@ class CatsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_cats, container, false)
+        return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,13 +37,8 @@ class CatsFragment : Fragment() {
     }
 
     private fun subscribeToUI() {
-        more_facts_button.setOnClickListener {
-            viewModel.downloadCats()
+        more_details_button.setOnClickListener {
+            viewModel.details()
         }
-    }
-
-    private fun navigateToDetailsScreen() {
-        val direction = CatsFragmentDirections.actionCatsFragmentToDetailsFragment()
-        findNavController().navigate(direction)
     }
 }
