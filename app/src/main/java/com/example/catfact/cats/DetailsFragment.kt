@@ -20,7 +20,7 @@ class DetailsFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        (activity as MainActivity).catsComponent.inject(this)
+        (activity as MainActivity).catFactsComponent.inject(this)
     }
 
     override fun onCreateView(

@@ -7,11 +7,11 @@ import dagger.Subcomponent
 
 @ActivityScope
 @Subcomponent
-interface CatsComponent {
+interface CatFactsComponent {
 
     @Subcomponent.Factory
     interface Factory {
-        fun create(): CatsComponent
+        fun create(): CatFactsComponent
     }
 
     fun inject(activity: MainActivity)

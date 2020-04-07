@@ -21,5 +21,5 @@ interface AppComponent {
         fun create(@BindsInstance context: Context): AppComponent
     }
 
-    fun catsComponent(): CatsComponent.Factory
+    fun catsComponent(): CatFactsComponent.Factory
 }

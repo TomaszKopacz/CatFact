@@ -2,5 +2,5 @@ package com.example.catfact.di
 
 import dagger.Module
 
-@Module(subcomponents = [CatsComponent::class])
+@Module(subcomponents = [CatFactsComponent::class])
 class SubcomponentsModule
