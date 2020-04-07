@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.catfact.MainActivity
 import com.example.catfact.R
@@ -35,12 +36,19 @@ class CatsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         subscribeToUI()
+        subscribeToViewModel()
     }
 
     private fun subscribeToUI() {
         more_facts_button.setOnClickListener {
             viewModel.downloadCats()
         }
+    }
+
+    private fun subscribeToViewModel() {
+        viewModel.catFacts().observe(this, Observer {
+
+        })
     }
 
     private fun navigateToDetailsScreen() {

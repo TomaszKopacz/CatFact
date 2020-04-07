@@ -1,3 +1,6 @@
 package com.example.catfact.model
 
-class CatFactsResponse(val all: List<CatFact>)
+import com.google.gson.annotations.SerializedName
+
+class CatFactsResponse(
+    @SerializedName("all") val facts: List<CatFact>)

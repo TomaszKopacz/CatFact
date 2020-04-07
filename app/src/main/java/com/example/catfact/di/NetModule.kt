@@ -1,12 +1,19 @@
 package com.example.catfact.di
 
-import com.example.catfact.data.CatsApi
+import com.example.catfact.data.CatFactsRepository
+import com.example.catfact.data.remote.FactsRemoteApi
+import com.example.catfact.data.remote.FactsRemoteRepository
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class RemoteRepository
 
 @Module
 class NetModule {
@@ -31,7 +38,15 @@ class NetModule {
 
     @Provides
     @Singleton
-    fun provideCatsSource(retrofit: Retrofit): CatsApi {
-        return retrofit.create(CatsApi::class.java)
+    fun provideCatsSource(retrofit: Retrofit): FactsRemoteApi {
+        return retrofit.create(FactsRemoteApi::class.java)
+    }
+
+
+    @Provides
+    @RemoteRepository
+    @Singleton
+    fun provideRemoteRepository(remoteApi: FactsRemoteApi): CatFactsRepository {
+        return FactsRemoteRepository(remoteApi)
     }
 }
