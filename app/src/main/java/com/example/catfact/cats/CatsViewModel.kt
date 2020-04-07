@@ -15,6 +15,8 @@ class CatsViewModel @Inject constructor(private val catFactsFacade: CatFactsFaca
 
     private val catFactsResult = MutableLiveData<Result<List<CatFact>>>()
 
+    private val catFactChosen = MutableLiveData<CatFact>()
+
     init {
         downloadCats()
     }
@@ -26,9 +28,11 @@ class CatsViewModel @Inject constructor(private val catFactsFacade: CatFactsFaca
         }
     }
 
-    fun details() {
-
+    fun onCatFactChosen(catFact: CatFact) {
+        catFactChosen.postValue(catFact)
     }
 
     fun catFactsResult(): LiveData<Result<List<CatFact>>> = catFactsResult
+
+    fun catFact(): LiveData<CatFact> = catFactChosen
 }

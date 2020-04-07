@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.example.catfact.MainActivity
 
 import com.example.catfact.R
+import com.example.catfact.model.CatFact
 import kotlinx.android.synthetic.main.fragment_details.*
 import javax.inject.Inject
 
@@ -33,12 +35,16 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        subscribeToUI()
+        subscribeToViewModel()
     }
 
-    private fun subscribeToUI() {
-        more_details_button.setOnClickListener {
-            viewModel.details()
-        }
+    private fun subscribeToViewModel() {
+        viewModel.catFact().observe(this, Observer { catFact ->
+            showFact(catFact)
+        })
+    }
+
+    private fun showFact(catFact: CatFact) {
+        details_text.text = catFact.text
     }
 }
