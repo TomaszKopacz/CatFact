@@ -1,8 +1,8 @@
 package com.example.catfact.di
 
 import com.example.catfact.data.CatFactsRepository
-import com.example.catfact.data.remote.FactsRemoteApi
-import com.example.catfact.data.remote.FactsRemoteRepository
+import com.example.catfact.data.remote.RemoteCatFactsApi
+import com.example.catfact.data.remote.RemoteCatFactsRepository
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -16,20 +16,23 @@ import javax.inject.Singleton
 annotation class RemoteRepository
 
 @Module
-class NetModule {
+class RetrofitModule {
 
     private val baseUrl = "https://cat-fact.herokuapp.com/"
 
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().build()
+        return OkHttpClient
+            .Builder()
+            .build()
     }
 
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
+        return Retrofit
+            .Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
@@ -38,15 +41,15 @@ class NetModule {
 
     @Provides
     @Singleton
-    fun provideCatsSource(retrofit: Retrofit): FactsRemoteApi {
-        return retrofit.create(FactsRemoteApi::class.java)
+    fun provideCatsSource(retrofit: Retrofit): RemoteCatFactsApi {
+        return retrofit.create(RemoteCatFactsApi::class.java)
     }
 
 
     @Provides
     @RemoteRepository
     @Singleton
-    fun provideRemoteRepository(remoteApi: FactsRemoteApi): CatFactsRepository {
-        return FactsRemoteRepository(remoteApi)
+    fun provideRemoteCatFactsRepository(remoteCatFactsApi: RemoteCatFactsApi): CatFactsRepository {
+        return RemoteCatFactsRepository(remoteCatFactsApi)
     }
 }

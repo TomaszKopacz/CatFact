@@ -1,6 +1,5 @@
 package com.example.catfact.cats
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,21 +13,22 @@ import javax.inject.Inject
 @ActivityScope
 class CatsViewModel @Inject constructor(private val catFactsFacade: CatFactsFacade): ViewModel() {
 
-    private val catFacts = MutableLiveData<List<CatFact>>()
+    private val catFactsResult = MutableLiveData<Result<List<CatFact>>>()
+
+    init {
+        downloadCats()
+    }
 
     fun downloadCats() {
         GlobalScope.launch {
-            when (val result = catFactsFacade.getCatFacts()) {
-                is Result.Success -> { catFacts.postValue(result.data) }
-                is Result.Failure -> { }
-            }
+            val result = catFactsFacade.getCatFacts()
+            catFactsResult.postValue(result)
         }
     }
 
     fun details() {
-        Log.d("CatFact", "Details")
-        Log.d("CatFact", this.toString())
+
     }
 
-    fun catFacts(): LiveData<List<CatFact>> = catFacts
+    fun catFactsResult(): LiveData<Result<List<CatFact>>> = catFactsResult
 }

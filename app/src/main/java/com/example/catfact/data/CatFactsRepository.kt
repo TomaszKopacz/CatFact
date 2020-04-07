@@ -1,9 +1,9 @@
 package com.example.catfact.data
 
-import com.example.catfact.model.CatFactsResponse
-import retrofit2.Response
+import com.example.catfact.model.CatFact
 
 interface CatFactsRepository {
 
-    suspend fun getCatFacts() : Response<CatFactsResponse>
+    suspend fun getAll() : Result<List<CatFact>>
+    suspend fun createAll(catFacts: List<CatFact>)
 }
