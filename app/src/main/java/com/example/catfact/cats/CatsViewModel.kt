@@ -18,11 +18,13 @@ class CatsViewModel @Inject constructor(private val catFactsFacade: CatFactsFaca
     private val catFactChosen = MutableLiveData<CatFact>()
 
     init {
-        downloadCats()
+        downloadCatFacts()
     }
 
-    fun downloadCats() {
+    fun downloadCatFacts() {
         GlobalScope.launch {
+            catFactsResult.postValue(Result.Loading)
+
             val result = catFactsFacade.getCatFacts()
             catFactsResult.postValue(result)
         }

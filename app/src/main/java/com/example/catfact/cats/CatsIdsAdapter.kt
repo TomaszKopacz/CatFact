@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.catfact.R
 import com.example.catfact.model.CatFact
 
@@ -27,7 +28,7 @@ class CatsIdsAdapter : RecyclerView.Adapter<CatsIdsAdapter.CatsIdsViewHolder>() 
     override fun onBindViewHolder(holder: CatsIdsViewHolder, position: Int) {
         val catFact = catFacts[position]
 
-        holder.setIcon()
+        holder.setIcon(CAT_ICON_URL)
         holder.setId(catFact.id)
     }
 
@@ -43,7 +44,7 @@ class CatsIdsAdapter : RecyclerView.Adapter<CatsIdsAdapter.CatsIdsViewHolder>() 
     inner class CatsIdsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private var catIdTextView = itemView.findViewById<TextView>(R.id.cat_id_text)
-        private var catIconImageVuew = itemView.findViewById<ImageView>(R.id.cat_icon)
+        private var catIconImageView = itemView.findViewById<ImageView>(R.id.cat_icon)
 
         init {
             setOnClickListener()
@@ -58,17 +59,24 @@ class CatsIdsAdapter : RecyclerView.Adapter<CatsIdsAdapter.CatsIdsViewHolder>() 
             }
         }
 
-        fun setIcon() {
-
+        fun setIcon(url: String) {
+            Glide
+                .with(itemView)
+                .load(url)
+                .centerCrop()
+                .into(catIconImageView)
         }
 
         fun setId(id: String) {
             catIdTextView.text = id
         }
-
     }
 
     interface OnItemClickListener {
         fun onItemClick(catFact: CatFact)
+    }
+
+    companion object {
+        private const val CAT_ICON_URL = "https://user-images.githubusercontent.com/17621860/78683891-2109dc80-78f0-11ea-8e4c-5bf93db6d967.png"
     }
 }
