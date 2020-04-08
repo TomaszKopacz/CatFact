@@ -49,7 +49,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun subscribeToViewModel() {
-        viewModel.catFact().observe(this, Observer { catFact ->
+        viewModel.chosenCatFactObservable().observe(this, Observer { catFact ->
             showFact(catFact)
         })
     }

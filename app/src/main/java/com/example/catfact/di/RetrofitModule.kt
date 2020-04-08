@@ -1,19 +1,17 @@
 package com.example.catfact.di
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.example.catfact.data.CatFactsRepository
 import com.example.catfact.data.remote.RemoteCatFactsApi
 import com.example.catfact.data.remote.RemoteCatFactsRepository
+import com.example.catfact.util.NetworkManager
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Qualifier
 import javax.inject.Singleton
-
-@Retention(AnnotationRetention.BINARY)
-@Qualifier
-annotation class RemoteRepository
 
 @Module
 class RetrofitModule {
@@ -41,15 +39,30 @@ class RetrofitModule {
 
     @Provides
     @Singleton
+    fun provideConnectivityManager(context: Context) : ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideConnectionManager(connectivityManager: ConnectivityManager) : NetworkManager {
+        return NetworkManager(connectivityManager)
+    }
+
+    @Provides
+    @Singleton
     fun provideCatsSource(retrofit: Retrofit): RemoteCatFactsApi {
         return retrofit.create(RemoteCatFactsApi::class.java)
     }
 
-
     @Provides
     @RemoteRepository
     @Singleton
-    fun provideRemoteCatFactsRepository(remoteCatFactsApi: RemoteCatFactsApi): CatFactsRepository {
-        return RemoteCatFactsRepository(remoteCatFactsApi)
+    fun provideRemoteCatFactsRepository(
+        remoteCatFactsApi: RemoteCatFactsApi,
+        networkManager: NetworkManager
+    ): CatFactsRepository {
+
+        return RemoteCatFactsRepository(remoteCatFactsApi, networkManager)
     }
 }

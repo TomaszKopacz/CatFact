@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -51,6 +52,7 @@ class CatsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerView()
+
         subscribeToUI()
         subscribeToViewModel()
     }
@@ -61,36 +63,54 @@ class CatsFragment : Fragment() {
     }
 
     private fun subscribeToUI() {
+        setListAdapterListener()
+        setButtonListener()
+    }
+
+    private fun setListAdapterListener() {
         catsIdsAdapter.setOnItemClickListener(object : CatsIdsAdapter.OnItemClickListener {
             override fun onItemClick(catFact: CatFact) {
                 viewModel.onCatFactChosen(catFact)
                 navigateToDetailsScreen()
             }
         })
+    }
 
+    private fun setButtonListener() {
         more_facts_button.setOnClickListener {
             viewModel.downloadCatFacts()
         }
     }
 
     private fun subscribeToViewModel() {
-        viewModel.catFactsResult().observe(this, Observer { result ->
+        setCatFactsObserver()
+    }
 
-            when (result) {
-                is Result.Loading -> {
-                    showProgressBar()
-                }
+    private fun setCatFactsObserver() {
+        viewModel.catFactsObservable().observe(this, catFactObserver)
+    }
 
-                is Result.Success -> {
-                    catsIdsAdapter.loadCatFacts(result.data)
-                    hideProgressBar()
-                }
+    private val catFactObserver = Observer<Result<List<CatFact>>> { result ->
 
-                is Result.Failure -> {
-                    hideProgressBar()
-                }
+        when (result) {
+            is Result.Loading -> {
+                showProgressBar()
             }
-        })
+
+            is Result.Success -> {
+                catsIdsAdapter.loadCatFacts(result.data)
+                hideProgressBar()
+            }
+
+            is Result.Warning -> {
+                showMessage(result.message.text)
+            }
+
+            is Result.Failure -> {
+                showMessage(result.message.text)
+                hideProgressBar()
+            }
+        }
     }
 
     private fun navigateToDetailsScreen() {
@@ -104,5 +124,9 @@ class CatsFragment : Fragment() {
 
     private fun hideProgressBar() {
         ProgressDialog.hide()
+    }
+
+    private fun showMessage(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 }

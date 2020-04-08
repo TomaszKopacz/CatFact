@@ -4,16 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import com.example.catfact.data.CatFactsRepository
 import com.example.catfact.data.local.CatFactsDatabase
-import com.example.catfact.data.local.LocalCatFactsRepository
 import com.example.catfact.data.local.LocalCatFactsApi
+import com.example.catfact.data.local.LocalCatFactsRepository
 import dagger.Module
 import dagger.Provides
-import javax.inject.Qualifier
 import javax.inject.Singleton
-
-@Retention(AnnotationRetention.BINARY)
-@Qualifier
-annotation class LocalRepository
 
 @Module
 class DatabaseModule {

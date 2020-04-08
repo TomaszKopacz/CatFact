@@ -1,28 +1,38 @@
 package com.example.catfact.data.local
 
 import com.example.catfact.data.CatFactsRepository
+import com.example.catfact.data.Message
 import com.example.catfact.data.Result
 import com.example.catfact.model.CatFact
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LocalCatFactsRepository @Inject constructor(
     private val localCatFactsApi: LocalCatFactsApi
-) : CatFactsRepository{
+) : CatFactsRepository {
 
     override suspend fun getAll(): Result<List<CatFact>> {
-        val response = localCatFactsApi.getAll()
+        return try {
+            val response = localCatFactsApi.getAll()
 
-        return if (response.isNotEmpty()) {
-            Result.Success(response)
+            when (response.isNotEmpty()) {
+                true -> Result.Success(response)
+                false -> Result.Failure(Message(Message.LOCAL_DATABASE_EMPTY))
+            }
 
-        } else {
-            Result.Failure("Cannot get results")
+        } catch (e: Exception) {
+            Result.Failure(Message(Message.LOCAL_DATABASE_QUERY_FAILED))
         }
     }
 
     override suspend fun createAll(catFacts: List<CatFact>) {
-        localCatFactsApi.createAll(catFacts)
+        try {
+            localCatFactsApi.createAll(catFacts)
+
+        } catch (e: Exception) {
+            Result.Failure(Message(Message.LOCAL_DATABASE_QUERY_FAILED))
+        }
     }
 }

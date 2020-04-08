@@ -13,9 +13,7 @@ import javax.inject.Inject
 @ActivityScope
 class CatsViewModel @Inject constructor(private val catFactsFacade: CatFactsFacade): ViewModel() {
 
-    private val catFactsResult = MutableLiveData<Result<List<CatFact>>>()
-
-    private val catFactChosen = MutableLiveData<CatFact>()
+    private val chosenCatFact = MutableLiveData<CatFact>()
 
     init {
         downloadCatFacts()
@@ -23,18 +21,15 @@ class CatsViewModel @Inject constructor(private val catFactsFacade: CatFactsFaca
 
     fun downloadCatFacts() {
         GlobalScope.launch {
-            catFactsResult.postValue(Result.Loading)
-
-            val result = catFactsFacade.getCatFacts()
-            catFactsResult.postValue(result)
+            catFactsFacade.getCatFacts()
         }
     }
 
     fun onCatFactChosen(catFact: CatFact) {
-        catFactChosen.postValue(catFact)
+        chosenCatFact.postValue(catFact)
     }
 
-    fun catFactsResult(): LiveData<Result<List<CatFact>>> = catFactsResult
+    fun catFactsObservable(): LiveData<Result<List<CatFact>>> = catFactsFacade.catFactsObservable()
 
-    fun catFact(): LiveData<CatFact> = catFactChosen
+    fun chosenCatFactObservable(): LiveData<CatFact> = chosenCatFact
 }
