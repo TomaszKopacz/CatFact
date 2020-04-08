@@ -10,16 +10,24 @@
         android:id="@+id/cats_ids_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/more_facts_button"
-        android:layout_margin="15dp"/>
+        android:layout_above="@+id/divider"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/margin_normal"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_size"
+        android:background="@color/primaryColor"
+        android:layout_above="@+id/more_facts_button"/>
 
     <Button
         android:id="@+id/more_facts_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="15dp"
+        android:layout_margin="@dimen/margin_normal"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:text="I WANT MORE KITTY FACTS !"/>
+        android:text="@string/more_facts_button_text"/>
 
 </RelativeLayout>
