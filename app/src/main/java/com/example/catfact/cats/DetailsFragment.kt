@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.example.catfact.MainActivity
 import com.example.catfact.R
 import com.example.catfact.model.CatFact
+import com.example.catfact.util.DateProvider
 import kotlinx.android.synthetic.main.fragment_details.*
 import javax.inject.Inject
 
@@ -56,6 +57,7 @@ class DetailsFragment : Fragment() {
 
     private fun showFact(catFact: CatFact) {
         details_text.text = catFact.text
+        date_text.text = DateProvider.now()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
