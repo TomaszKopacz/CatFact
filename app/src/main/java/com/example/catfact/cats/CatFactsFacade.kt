@@ -52,15 +52,24 @@ class CatFactsFacade @Inject constructor(
         catFacts.postValue(Result.Loading)
     }
 
-    private fun emitCatFacts(result: Result.Success<List<CatFact>>) {
-        catFacts.postValue(result)
-    }
-
     private fun emitError(result: Result.Failure) {
         catFacts.postValue(result)
     }
 
     private fun emitWarning(result: Result.Warning) {
         catFacts.postValue(result)
+    }
+
+    private fun emitCatFacts(result: Result.Success<List<CatFact>>) {
+        val newCatFacts = graspRandomElements(result.data, LIST_SIZE)
+        catFacts.postValue(Result.Success(newCatFacts))
+    }
+
+    private fun graspRandomElements(list: List<CatFact>, number: Int) : List<CatFact> {
+        return list.shuffled().subList(0, number)
+    }
+
+    companion object {
+        private const val LIST_SIZE: Int = 30
     }
 }
