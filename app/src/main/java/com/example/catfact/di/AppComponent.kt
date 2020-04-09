@@ -10,7 +10,7 @@ import javax.inject.Singleton
     modules = [
         SubcomponentsModule::class,
         RetrofitModule::class,
-        DatabaseModule::class
+        RoomModule::class
     ]
 )
 interface AppComponent {
