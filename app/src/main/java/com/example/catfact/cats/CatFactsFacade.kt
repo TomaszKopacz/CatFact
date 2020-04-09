@@ -63,12 +63,15 @@ class CatFactsFacade @Inject constructor(
     }
 
     private fun emitCatFacts(result: Result.Success<List<CatFact>>) {
-        val newCatFacts = graspRandomElements(result.data, LIST_SIZE)
+        val newCatFacts = graspRandomElements(result.data, MAX_LIST_SIZE)
         catFacts.postValue(Result.Success(newCatFacts))
     }
 
     private fun graspRandomElements(list: List<CatFact>, number: Int) : List<CatFact> {
-        return list.shuffled().subList(0, number)
+
+        val numOfElements = if(list.size > MAX_LIST_SIZE) MAX_LIST_SIZE else list.size
+
+        return list.shuffled().subList(0, numOfElements)
     }
 
     private var sendLoadingEnabled: Boolean = true
@@ -79,6 +82,6 @@ class CatFactsFacade @Inject constructor(
     }
 
     companion object {
-        private const val LIST_SIZE: Int = 30
+        private const val MAX_LIST_SIZE: Int = 30
     }
 }
