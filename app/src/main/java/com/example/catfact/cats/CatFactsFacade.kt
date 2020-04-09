@@ -8,6 +8,7 @@ import com.example.catfact.di.ActivityScope
 import com.example.catfact.di.LocalRepository
 import com.example.catfact.di.RemoteRepository
 import com.example.catfact.model.CatFact
+import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 
 @ActivityScope
@@ -21,7 +22,8 @@ class CatFactsFacade @Inject constructor(
     fun catFactsObservable() : LiveData<Result<List<CatFact>>> = catFacts
 
     suspend fun getCatFacts() {
-        emitLoading()
+        if (sendLoadingEnabled)
+            emitLoading()
 
         synchronizeRemoteAndLocalSources()
         fetchLocalSourceResult()
@@ -67,6 +69,13 @@ class CatFactsFacade @Inject constructor(
 
     private fun graspRandomElements(list: List<CatFact>, number: Int) : List<CatFact> {
         return list.shuffled().subList(0, number)
+    }
+
+    private var sendLoadingEnabled: Boolean = true
+
+    @TestOnly
+    fun disableLoadingStatusSending() {
+        sendLoadingEnabled = false
     }
 
     companion object {
