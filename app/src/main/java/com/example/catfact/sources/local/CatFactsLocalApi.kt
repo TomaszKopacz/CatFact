@@ -1,4 +1,4 @@
-package com.example.catfact.data.local
+package com.example.catfact.sources.local
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -9,11 +9,14 @@ import javax.inject.Singleton
 
 @Singleton
 @Dao
-interface LocalCatFactsApi {
+interface CatFactsLocalApi {
 
     @Query("SELECT * FROM cat_facts")
     fun getAll(): List<CatFact>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun createAll(catFacts: List<CatFact>)
+
+    @Query("DELETE FROM cat_facts")
+    fun deleteAll()
 }

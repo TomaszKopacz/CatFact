@@ -2,8 +2,8 @@ package com.example.catfact.cats
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.catfact.data.CatFactsRepository
-import com.example.catfact.data.Result
+import com.example.catfact.sources.CatFactsRepository
+import com.example.catfact.model.Result
 import com.example.catfact.di.ActivityScope
 import com.example.catfact.di.LocalRepository
 import com.example.catfact.di.RemoteRepository
@@ -19,7 +19,7 @@ class CatFactsFacade @Inject constructor(
 
     private val catFacts = MutableLiveData<Result<List<CatFact>>>()
 
-    fun catFactsObservable() : LiveData<Result<List<CatFact>>> = catFacts
+    fun catFactsObservable(): LiveData<Result<List<CatFact>>> = catFacts
 
     suspend fun getCatFacts() {
         if (sendLoadingEnabled)
@@ -30,9 +30,10 @@ class CatFactsFacade @Inject constructor(
     }
 
     private suspend fun synchronizeRemoteAndLocalSources() {
-        when (val remoteResult = getRemoteCatFacts()) {
-            is  Result.Success -> updateLocalDatabase(remoteResult.data)
-            is Result.Failure -> emitWarning(Result.Warning(remoteResult.message))
+        when (val remoteResult = getRemoteCatFacts(NUM_OF_ELEMENTS)) {
+            is Result.Success -> updateLocalDatabase(remoteResult.data)
+            is Result.Failure -> emitWarning(
+                Result.Warning(remoteResult.message))
         }
     }
 
@@ -43,12 +44,14 @@ class CatFactsFacade @Inject constructor(
         }
     }
 
-    private suspend fun getRemoteCatFacts(): Result<List<CatFact>> = remoteRepo.getAll()
+    private suspend fun getRemoteCatFacts(number: Int): Result<List<CatFact>> =
+        remoteRepo.getSome(number)
 
-    private suspend fun getLocalCatFacts(): Result<List<CatFact>> = localRepo.getAll()
+    private suspend fun getLocalCatFacts(): Result<List<CatFact>> =
+        localRepo.getAll()
 
     private suspend fun updateLocalDatabase(catsFacts: List<CatFact>) =
-        localRepo.createAll(catsFacts)
+        localRepo.updateAll(catsFacts)
 
     private fun emitLoading() {
         catFacts.postValue(Result.Loading)
@@ -63,15 +66,7 @@ class CatFactsFacade @Inject constructor(
     }
 
     private fun emitCatFacts(result: Result.Success<List<CatFact>>) {
-        val newCatFacts = graspRandomElements(result.data, MAX_LIST_SIZE)
-        catFacts.postValue(Result.Success(newCatFacts))
-    }
-
-    private fun graspRandomElements(list: List<CatFact>, number: Int) : List<CatFact> {
-
-        val numOfElements = if(list.size > MAX_LIST_SIZE) MAX_LIST_SIZE else list.size
-
-        return list.shuffled().subList(0, numOfElements)
+        catFacts.postValue(Result.Success(result.data))
     }
 
     private var sendLoadingEnabled: Boolean = true
@@ -82,6 +77,6 @@ class CatFactsFacade @Inject constructor(
     }
 
     companion object {
-        private const val MAX_LIST_SIZE: Int = 30
+        private const val NUM_OF_ELEMENTS: Int = 30
     }
 }

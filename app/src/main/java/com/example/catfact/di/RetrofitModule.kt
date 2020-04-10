@@ -2,10 +2,12 @@ package com.example.catfact.di
 
 import android.content.Context
 import android.net.ConnectivityManager
-import com.example.catfact.data.CatFactsRepository
-import com.example.catfact.data.remote.RemoteCatFactsApi
-import com.example.catfact.data.remote.RemoteCatFactsRepository
+import com.example.catfact.sources.CatFactsRepository
+import com.example.catfact.sources.remote.RemoteApi
+import com.example.catfact.sources.remote.RemoteCatFactsRepository
 import com.example.catfact.util.NetworkManager
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -28,11 +30,19 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient): Retrofit {
+    fun provideGson(): Gson {
+        return GsonBuilder()
+            .setDateFormat(API_DATE_FORMAT)
+            .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(gson: Gson, client: OkHttpClient): Retrofit {
         return Retrofit
             .Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
     }
@@ -51,18 +61,22 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideCatsSource(retrofit: Retrofit): RemoteCatFactsApi {
-        return retrofit.create(RemoteCatFactsApi::class.java)
+    fun provideCatsSource(retrofit: Retrofit): RemoteApi {
+        return retrofit.create(RemoteApi::class.java)
     }
 
     @Provides
     @RemoteRepository
     @Singleton
     fun provideRemoteCatFactsRepository(
-        remoteCatFactsApi: RemoteCatFactsApi,
+        remoteApi: RemoteApi,
         networkManager: NetworkManager
     ): CatFactsRepository {
 
-        return RemoteCatFactsRepository(remoteCatFactsApi, networkManager)
+        return RemoteCatFactsRepository(remoteApi, networkManager)
+    }
+
+    companion object {
+        private val API_DATE_FORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
     }
 }

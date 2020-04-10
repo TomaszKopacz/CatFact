@@ -1,22 +1,26 @@
 package com.example.catfact.cats
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.catfact.data.CatFactsRepository
-import com.example.catfact.data.Message
-import com.example.catfact.data.Result
+import com.example.catfact.sources.CatFactsRepository
+import com.example.catfact.model.Message
+import com.example.catfact.model.Result
 import com.example.catfact.model.CatFact
 import com.example.catfact.util.test.observeOnce
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import java.sql.Timestamp
 
 class CatFactsFacadeTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var catFactsFacade: CatFactsFacade
 
     private lateinit var remoteRepo: CatFactsRepository
     private lateinit var localRepo: CatFactsRepository
@@ -28,23 +32,22 @@ class CatFactsFacadeTest {
         remoteRepo = Mockito.mock(CatFactsRepository::class.java)
         localRepo = Mockito.mock(CatFactsRepository::class.java)
 
+        catFactsFacade = CatFactsFacade(remoteRepo, localRepo)
+
         populateList()
     }
 
     private fun populateList() {
-        val fact1 = CatFact("id1", "text1")
-        val fact2 = CatFact("id2", "text2")
-        val fact3 = CatFact("id3", "text3")
+        val fact1 = CatFact("id1", "text1", Timestamp(0))
+        val fact2 = CatFact("id2", "text2", Timestamp(0))
+        val fact3 = CatFact("id3", "text3", Timestamp(0))
 
         catFactsList = listOf(fact1, fact2, fact3)
     }
 
     @Test
-    fun `GIVEN download attempt WHEN data being fetched THEN status is Loading`() {
-
-        val catFactsFacade = CatFactsFacade(remoteRepo, localRepo)
-
-        runBlocking {
+    fun `GIVEN CatFactsFacade WHEN data being fetched THEN status is Loading`() {
+        GlobalScope.launch {
             Mockito
                 .`when`(remoteRepo.getAll())
                 .thenReturn(Result.Success(catFactsList))
@@ -54,20 +57,18 @@ class CatFactsFacadeTest {
                 .thenReturn(Result.Success(catFactsList))
 
             catFactsFacade.getCatFacts()
-        }
 
-        catFactsFacade.catFactsObservable().observeOnce { result ->
-            assertTrue(result is Result.Loading)
+            catFactsFacade.catFactsObservable().observeOnce { result ->
+                assertTrue(result is Result.Loading)
+            }
         }
     }
 
     @Test
-    fun `GIVEN download attempt WHEN data fetched correctly THEN status is Success`() {
+    fun `GIVEN CatFactsFacade WHEN data fetched correctly THEN status is Success`() {
+        GlobalScope.launch {
+            catFactsFacade.disableLoadingStatusSending()
 
-        val catFactsFacade = CatFactsFacade(remoteRepo, localRepo)
-        catFactsFacade.disableLoadingStatusSending()
-
-        runBlocking {
             Mockito
                 .`when`(remoteRepo.getAll())
                 .thenReturn(Result.Success(catFactsList))
@@ -77,48 +78,44 @@ class CatFactsFacadeTest {
                 .thenReturn(Result.Success(catFactsList))
 
             catFactsFacade.getCatFacts()
-        }
 
-        catFactsFacade.catFactsObservable().observeOnce { result ->
-            assertTrue(result is Result.Success)
+            catFactsFacade.catFactsObservable().observeOnce { result ->
+                assertTrue(result is Result.Success)
+            }
         }
     }
 
     @Test
-    fun `GIVEN download attempt WHEN remote source query failed THEN status is Warning`() {
+    fun `GIVEN CatFactsFacade WHEN remote source query failed THEN status is Warning`() {
+        GlobalScope.launch {
+            catFactsFacade.disableLoadingStatusSending()
 
-        val catFactsFacade = CatFactsFacade(remoteRepo, localRepo)
-        catFactsFacade.disableLoadingStatusSending()
-
-        runBlocking {
             Mockito
                 .`when`(remoteRepo.getAll())
                 .thenReturn(Result.Failure(Message("Some Error Text")))
 
             catFactsFacade.getCatFacts()
-        }
 
-        catFactsFacade.catFactsObservable().observeOnce { result ->
-            assertTrue(result is Result.Warning)
+            catFactsFacade.catFactsObservable().observeOnce { result ->
+                assertTrue(result is Result.Warning)
+            }
         }
     }
 
     @Test
-    fun `GIVEN download attempt WHEN local query failed THEN status is Failure`() {
+    fun `GIVEN CatFactsFacade WHEN local query failed THEN status is Failure`() {
+        GlobalScope.launch {
+            catFactsFacade.disableLoadingStatusSending()
 
-        val catFactsFacade = CatFactsFacade(remoteRepo, localRepo)
-        catFactsFacade.disableLoadingStatusSending()
-
-        runBlocking {
             Mockito
                 .`when`(localRepo.getAll())
                 .thenReturn(Result.Failure(Message("Some Error Text")))
 
             catFactsFacade.getCatFacts()
-        }
 
-        catFactsFacade.catFactsObservable().observeOnce { result ->
-            assertTrue(result is Result.Failure)
+            catFactsFacade.catFactsObservable().observeOnce { result ->
+                assertTrue(result is Result.Failure)
+            }
         }
     }
 }

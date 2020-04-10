@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.catfact.MainActivity
 import com.example.catfact.R
-import com.example.catfact.data.Result
+import com.example.catfact.model.Result
 import com.example.catfact.dialogs.ProgressDialog
 import com.example.catfact.model.CatFact
 import kotlinx.android.synthetic.main.fragment_cats.*

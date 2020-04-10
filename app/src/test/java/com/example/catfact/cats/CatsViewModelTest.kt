@@ -1,18 +1,16 @@
 package com.example.catfact.cats
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.catfact.data.CatFactsRepository
 import com.example.catfact.model.CatFact
 import com.example.catfact.util.test.observeOnce
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertTrue
 import org.junit.Before
-
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import java.sql.Timestamp
 
 class CatsViewModelTest {
 
@@ -29,7 +27,7 @@ class CatsViewModelTest {
         catFactsFacade = Mockito.mock(CatFactsFacade::class.java)
         catsViewModel = CatsViewModel(catFactsFacade)
 
-        testCatFact = CatFact("id", "text")
+        testCatFact = CatFact("id", "text", Timestamp(0))
     }
 
     @Test
@@ -41,7 +39,15 @@ class CatsViewModelTest {
     }
 
     @Test
-    fun `GIVEN cat facts WHEN cat fact chosen THEN emit cat fact`() {
+    fun `GIVEN CatsViewModel WHEN download cat facts requested THEN cat facts are fetched`() {
+        GlobalScope.launch {
+            catsViewModel.downloadCatFacts()
+            Mockito.verify(catFactsFacade).getCatFacts()
+        }
+    }
+
+    @Test
+    fun `GIVEN CatsViewModel WHEN cat fact chosen THEN emit cat fact`() {
         catsViewModel.onCatFactChosen(testCatFact)
 
         catsViewModel.chosenCatFactObservable().observeOnce { catFact ->

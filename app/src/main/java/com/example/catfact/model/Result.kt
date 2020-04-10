@@ -1,4 +1,4 @@
-package com.example.catfact.data
+package com.example.catfact.model
 
 sealed class Result<out R> {
     object Loading : Result<Nothing>()

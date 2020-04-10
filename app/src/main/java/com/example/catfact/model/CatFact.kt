@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.sql.Timestamp
 
 @Entity(tableName = "cat_facts")
 class CatFact (
@@ -15,5 +16,9 @@ class CatFact (
 
     @SerializedName(value = "text")
     @ColumnInfo(name = "text")
-    val text: String
+    val text: String,
+
+    @SerializedName(value = "updatedAt")
+    @ColumnInfo(name = "updatedAt")
+    val updatedAt: Timestamp
 )

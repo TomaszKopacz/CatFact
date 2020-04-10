@@ -3,9 +3,9 @@ package com.example.catfact.cats
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.catfact.data.Result
 import com.example.catfact.di.ActivityScope
 import com.example.catfact.model.CatFact
+import com.example.catfact.model.Result
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject

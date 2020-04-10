@@ -2,10 +2,10 @@ package com.example.catfact.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.catfact.data.CatFactsRepository
-import com.example.catfact.data.local.CatFactsDatabase
-import com.example.catfact.data.local.LocalCatFactsApi
-import com.example.catfact.data.local.LocalCatFactsRepository
+import com.example.catfact.sources.CatFactsRepository
+import com.example.catfact.sources.local.CatFactsDatabase
+import com.example.catfact.sources.local.CatFactsLocalApi
+import com.example.catfact.sources.local.LocalCatFactsRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -23,14 +23,14 @@ class RoomModule {
 
     @Provides
     @Singleton
-    fun provideCatFactsSource(db: CatFactsDatabase) : LocalCatFactsApi {
+    fun provideCatFactsSource(db: CatFactsDatabase) : CatFactsLocalApi {
         return db.dao()
     }
 
     @Provides
     @LocalRepository
     @Singleton
-    fun provideLocalCatFactsRepository(localCatFactsApi: LocalCatFactsApi) : CatFactsRepository {
-        return LocalCatFactsRepository(localCatFactsApi)
+    fun provideLocalCatFactsRepository(catFactsLocalApi: CatFactsLocalApi) : CatFactsRepository {
+        return LocalCatFactsRepository(catFactsLocalApi)
     }
 }
