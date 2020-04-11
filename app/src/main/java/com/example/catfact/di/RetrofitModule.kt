@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import com.example.catfact.sources.CatFactsRepository
 import com.example.catfact.sources.remote.RemoteApi
 import com.example.catfact.sources.remote.RemoteCatFactsRepository
-import com.example.catfact.util.NetworkManager
+import com.example.catfact.util.network.NetworkManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -59,7 +59,6 @@ class RetrofitModule {
     fun provideCatsSource(retrofit: Retrofit): RemoteApi =
         retrofit.create(RemoteApi::class.java)
 
-
     @Provides
     @RemoteRepository
     @Singleton
@@ -68,7 +67,6 @@ class RetrofitModule {
         networkManager: NetworkManager
     ): CatFactsRepository =
         RemoteCatFactsRepository(remoteApi, networkManager)
-
 
     companion object {
         private const val API_DATE_FORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"

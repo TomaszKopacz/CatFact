@@ -4,7 +4,7 @@ import com.example.catfact.sources.CatFactsRepository
 import com.example.catfact.model.Message
 import com.example.catfact.model.Result
 import com.example.catfact.model.CatFact
-import com.example.catfact.util.NetworkManager
+import com.example.catfact.util.network.NetworkManager
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton

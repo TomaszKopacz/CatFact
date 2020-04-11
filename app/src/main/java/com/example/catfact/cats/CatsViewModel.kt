@@ -13,7 +13,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @ActivityScope
-class CatsViewModel @Inject constructor(private val catFactsFacade: CatFactsFacade): ViewModel() {
+class CatsViewModel @Inject constructor(
+    private val catFactsFacade: CatFactsFacade
+) : ViewModel() {
 
     private val chosenCatFact = MutableLiveData<CatFact>()
 

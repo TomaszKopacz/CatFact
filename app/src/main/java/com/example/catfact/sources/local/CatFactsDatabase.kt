@@ -12,5 +12,5 @@ import javax.inject.Singleton
 @TypeConverters(DateConverters::class)
 abstract class CatFactsDatabase : RoomDatabase() {
 
-    abstract fun dao() : CatFactsLocalApi
+    abstract fun dao(): CatFactsLocalApi
 }

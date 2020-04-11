@@ -52,5 +52,4 @@ class CatFactsFacade @Inject constructor(
         localRepo.updateAll(catsFacts)
 
     private fun emitResult(result: Result<List<CatFact>>) = catFacts.postValue(result)
-
 }

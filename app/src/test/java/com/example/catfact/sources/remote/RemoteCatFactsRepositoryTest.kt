@@ -3,7 +3,7 @@ package com.example.catfact.sources.remote
 import com.example.catfact.model.CatFact
 import com.example.catfact.model.Message
 import com.example.catfact.model.Result
-import com.example.catfact.util.NetworkManager
+import com.example.catfact.util.network.NetworkManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody

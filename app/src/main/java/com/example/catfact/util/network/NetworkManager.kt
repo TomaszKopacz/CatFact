@@ -1,4 +1,4 @@
-package com.example.catfact.util
+package com.example.catfact.util.network
 
 import android.net.ConnectivityManager
 import javax.inject.Inject
@@ -9,8 +9,9 @@ class NetworkManager @Inject constructor(
     private val connectivityManager: ConnectivityManager
 ) {
 
-    fun isConnected() : Boolean {
+    fun isConnected(): Boolean {
         val networkInfo = connectivityManager.activeNetworkInfo
+
         return  networkInfo != null && networkInfo.isConnected
     }
 }
