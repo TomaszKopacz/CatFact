@@ -8,14 +8,10 @@ import java.util.*
 class DateConverters {
 
     @TypeConverter
-    fun toTimestamp(value: Long?): Timestamp {
-        return Timestamp(value ?: 0)
-    }
+    fun toTimestamp(value: Long?): Timestamp = Timestamp(value ?: 0)
 
     @TypeConverter
-    fun fromTimestamp(value: Timestamp?): Long {
-        return value?.time ?: 0
-    }
+    fun fromTimestamp(value: Timestamp?): Long = value?.time ?: 0
 
     fun niceFormat(timestamp: Timestamp): String {
         val formatter = SimpleDateFormat(NICE_DATE_FORMAT, Locale.getDefault())

@@ -22,6 +22,10 @@ class CatsViewModelTest {
 
     private lateinit var testCatFact: CatFact
 
+    companion object {
+        private const val NUM_OF_ELEMENTS = 30
+    }
+
     @Before
     fun setUp() {
         catFactsFacade = Mockito.mock(CatFactsFacade::class.java)
@@ -34,15 +38,17 @@ class CatsViewModelTest {
     fun `GIVEN CatsViewModel WHEN viewModel created THEN cat facts are fetched`() {
         GlobalScope.launch {
             CatsViewModel(catFactsFacade)
-            Mockito.verify(catFactsFacade).getCatFacts()
+
+            Mockito.verify(catFactsFacade).getCatFacts(NUM_OF_ELEMENTS)
         }
     }
 
     @Test
-    fun `GIVEN CatsViewModel WHEN download cat facts requested THEN cat facts are fetched`() {
+    fun `GIVEN CatsViewModel WHEN downloadCatFacts() called THEN cat facts are fetched`() {
         GlobalScope.launch {
-            catsViewModel.downloadCatFacts()
-            Mockito.verify(catFactsFacade).getCatFacts()
+            catsViewModel.downloadCatFacts(NUM_OF_ELEMENTS)
+
+            Mockito.verify(catFactsFacade).getCatFacts(NUM_OF_ELEMENTS)
         }
     }
 

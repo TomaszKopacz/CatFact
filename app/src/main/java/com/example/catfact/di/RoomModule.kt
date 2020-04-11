@@ -17,20 +17,16 @@ class RoomModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(context: Context) : CatFactsDatabase {
-        return Room.databaseBuilder(context, CatFactsDatabase::class.java, db).build()
-    }
+    fun provideDatabase(context: Context): CatFactsDatabase =
+        Room.databaseBuilder(context, CatFactsDatabase::class.java, db).build()
 
     @Provides
     @Singleton
-    fun provideCatFactsSource(db: CatFactsDatabase) : CatFactsLocalApi {
-        return db.dao()
-    }
+    fun provideCatFactsSource(db: CatFactsDatabase): CatFactsLocalApi = db.dao()
 
     @Provides
     @LocalRepository
     @Singleton
-    fun provideLocalCatFactsRepository(catFactsLocalApi: CatFactsLocalApi) : CatFactsRepository {
-        return LocalCatFactsRepository(catFactsLocalApi)
-    }
+    fun provideLocalCatFactsRepository(catFactsLocalApi: CatFactsLocalApi): CatFactsRepository =
+        LocalCatFactsRepository(catFactsLocalApi)
 }

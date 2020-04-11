@@ -25,7 +25,13 @@ class DetailsFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        (activity as MainActivity).catFactsComponent.inject(this)
+        injectDependencies()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        subscribeToViewModel()
     }
 
     override fun onCreateView(
@@ -38,26 +44,30 @@ class DetailsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
-    private fun showBackButton() {
-        setHasOptionsMenu(true)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        subscribeToViewModel()
+    private fun injectDependencies() {
+        (activity as MainActivity).catFactsComponent.inject(this)
     }
 
     private fun subscribeToViewModel() {
-        viewModel.chosenCatFactObservable().observe(this, Observer { catFact ->
-            showFact(catFact)
-        })
+        setChosenCatFactObserver()
+    }
+
+    private fun setChosenCatFactObserver() =
+        viewModel.chosenCatFactObservable().observe(this, chosenCatObserver)
+
+
+    private val chosenCatObserver = Observer<CatFact> { catFact ->
+        showFact(catFact)
     }
 
     private fun showFact(catFact: CatFact) {
         details_text.text = catFact.text
         date_text.text = DateConverters().niceFormat(catFact.updatedAt)
+    }
+
+    private fun showBackButton() {
+        setHasOptionsMenu(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

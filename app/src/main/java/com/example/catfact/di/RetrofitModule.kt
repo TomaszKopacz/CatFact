@@ -22,48 +22,43 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient
+    fun provideOkHttpClient(): OkHttpClient =
+        OkHttpClient
             .Builder()
             .build()
-    }
 
     @Provides
     @Singleton
-    fun provideGson(): Gson {
-        return GsonBuilder()
+    fun provideGson(): Gson =
+        GsonBuilder()
             .setDateFormat(API_DATE_FORMAT)
             .create()
-    }
 
     @Provides
     @Singleton
-    fun provideRetrofit(gson: Gson, client: OkHttpClient): Retrofit {
-        return Retrofit
+    fun provideRetrofit(gson: Gson, client: OkHttpClient): Retrofit =
+        Retrofit
             .Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
-    }
 
     @Provides
     @Singleton
-    fun provideConnectivityManager(context: Context) : ConnectivityManager {
-        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    }
+    fun provideConnectivityManager(context: Context): ConnectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     @Provides
     @Singleton
-    fun provideConnectionManager(connectivityManager: ConnectivityManager) : NetworkManager {
-        return NetworkManager(connectivityManager)
-    }
+    fun provideConnectionManager(connectivityManager: ConnectivityManager): NetworkManager =
+        NetworkManager(connectivityManager)
 
     @Provides
     @Singleton
-    fun provideCatsSource(retrofit: Retrofit): RemoteApi {
-        return retrofit.create(RemoteApi::class.java)
-    }
+    fun provideCatsSource(retrofit: Retrofit): RemoteApi =
+        retrofit.create(RemoteApi::class.java)
+
 
     @Provides
     @RemoteRepository
@@ -71,12 +66,11 @@ class RetrofitModule {
     fun provideRemoteCatFactsRepository(
         remoteApi: RemoteApi,
         networkManager: NetworkManager
-    ): CatFactsRepository {
+    ): CatFactsRepository =
+        RemoteCatFactsRepository(remoteApi, networkManager)
 
-        return RemoteCatFactsRepository(remoteApi, networkManager)
-    }
 
     companion object {
-        private val API_DATE_FORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
+        private const val API_DATE_FORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"
     }
 }
