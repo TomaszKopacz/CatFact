@@ -1,10 +1,10 @@
 package com.example.catfact.cats
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.catfact.sources.CatFactsRepository
+import com.example.catfact.model.CatFact
 import com.example.catfact.model.Message
 import com.example.catfact.model.Result
-import com.example.catfact.model.CatFact
+import com.example.catfact.sources.CatFactsRepository
 import com.example.catfact.util.test.observeOnce
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,42 +12,33 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
-import java.sql.Timestamp
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 class CatFactsFacadeTest {
 
     @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     private lateinit var catFactsFacade: CatFactsFacade
 
+    @Mock
     private lateinit var remoteRepo: CatFactsRepository
+
+    @Mock
     private lateinit var localRepo: CatFactsRepository
 
+    @Mock
     private lateinit var testFactsList: List<CatFact>
-
-    companion object {
-        private const val ERROR_MESSAGE = "ERROR"
-        private const val NUM_OF_ELEMENTS = 30
-    }
 
     @Before
     fun setup() {
-        remoteRepo = Mockito.mock(CatFactsRepository::class.java)
-        localRepo = Mockito.mock(CatFactsRepository::class.java)
-
         catFactsFacade = CatFactsFacade(remoteRepo, localRepo)
-
-        populateList()
-    }
-
-    private fun populateList() {
-        val fact1 = CatFact("id1", "text1", Timestamp(0))
-        val fact2 = CatFact("id2", "text2", Timestamp(0))
-        val fact3 = CatFact("id3", "text3", Timestamp(0))
-
-        testFactsList = listOf(fact1, fact2, fact3)
     }
 
     @Test
@@ -135,5 +126,10 @@ class CatFactsFacadeTest {
                 assertTrue((result as Result.Failure).message.text == ERROR_MESSAGE)
             }
         }
+    }
+
+    companion object {
+        private const val ERROR_MESSAGE = "ERROR"
+        private const val NUM_OF_ELEMENTS = 30
     }
 }

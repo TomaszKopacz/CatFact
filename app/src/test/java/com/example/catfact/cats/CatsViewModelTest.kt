@@ -9,7 +9,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import java.sql.Timestamp
 
 class CatsViewModelTest {
@@ -17,21 +20,20 @@ class CatsViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     private lateinit var catsViewModel: CatsViewModel
+
+    @Mock
     private lateinit var catFactsFacade: CatFactsFacade
 
+    @Mock
     private lateinit var testCatFact: CatFact
-
-    companion object {
-        private const val NUM_OF_ELEMENTS = 30
-    }
 
     @Before
     fun setUp() {
-        catFactsFacade = Mockito.mock(CatFactsFacade::class.java)
         catsViewModel = CatsViewModel(catFactsFacade)
-
-        testCatFact = CatFact("id", "text", Timestamp(0))
     }
 
     @Test
@@ -59,5 +61,9 @@ class CatsViewModelTest {
         catsViewModel.chosenCatFactObservable().observeOnce { catFact ->
             assertTrue(catFact == testCatFact)
         }
+    }
+
+    companion object {
+        private const val NUM_OF_ELEMENTS = 30
     }
 }

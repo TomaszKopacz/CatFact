@@ -1,5 +1,6 @@
 package com.example.catfact.sources.local
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.catfact.model.CatFact
 import com.example.catfact.model.Message
 import com.example.catfact.model.Result
@@ -7,33 +8,32 @@ import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito
-import java.sql.Timestamp
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 class LocalCatFactsRepositoryTest {
 
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     private lateinit var repository: LocalCatFactsRepository
 
+    @Mock
     private lateinit var api: CatFactsLocalApi
 
+    @Mock
     private lateinit var testFacts: List<CatFact>
 
     @Before
     fun setUp() {
-        api = Mockito.mock(CatFactsLocalApi::class.java)
-
         repository = LocalCatFactsRepository(api)
-
-        populateFactsList()
-    }
-
-    private fun populateFactsList() {
-        val fact1 = CatFact("id1", "text1", Timestamp(0))
-        val fact2 = CatFact("id2", "text2", Timestamp(0))
-        val fact3 = CatFact("id3", "text3", Timestamp(0))
-
-        testFacts = listOf(fact1, fact2, fact3)
     }
 
     @Test
