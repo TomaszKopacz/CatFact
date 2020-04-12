@@ -7,6 +7,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,10 +21,13 @@ class MainActivityTest {
 
     @Test
     fun verifyComponentsAreVisible() {
-        onView(withId(R.id.more_facts_button))
-            .check(matches(isDisplayed()))
+
+        waitForData()
 
         onView(withId(R.id.cats_ids_list))
+            .check(matches(isDisplayed()))
+
+        onView(withId(R.id.more_facts_button))
             .check(matches(isDisplayed()))
 
         onView(withId(R.id.cats_ids_list))
@@ -33,5 +38,11 @@ class MainActivityTest {
 
         onView(withId((R.id.date_text)))
             .check(matches(isDisplayed()))
+    }
+
+    private fun waitForData() {
+        runBlocking {
+            delay(3000)
+        }
     }
 }
