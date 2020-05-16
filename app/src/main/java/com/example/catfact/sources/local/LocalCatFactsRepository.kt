@@ -4,6 +4,7 @@ import com.example.catfact.sources.CatFactsRepository
 import com.example.catfact.model.Message
 import com.example.catfact.model.Result
 import com.example.catfact.model.CatFact
+import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,5 +44,9 @@ class LocalCatFactsRepository (
     override suspend fun updateAll(catFacts: List<CatFact>) {
         catFactsLocalApi.deleteAll()
         catFactsLocalApi.createAll(catFacts)
+    }
+
+    override fun getCat(): Observable<CatFact> {
+        return Observable.create(null)
     }
 }

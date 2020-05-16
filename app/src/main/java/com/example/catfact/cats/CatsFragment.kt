@@ -3,6 +3,7 @@ package com.example.catfact.cats
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +67,7 @@ class CatsFragment : Fragment() {
 
     private fun subscribeToViewModel() {
         setCatFactsObserver()
+        setLoadingObserver()
     }
 
     private fun setCatFactsObserver() {
@@ -76,6 +78,24 @@ class CatsFragment : Fragment() {
         when (result) {
             is Result.Success -> catsIdsAdapter.loadCatFacts(result.data)
             is Result.Failure -> showMessage(result.message.text)
+        }
+    }
+
+    private fun setLoadingObserver() {
+        viewModel.loadingStatusObservable().observe(this, loadingStatusObserver)
+    }
+
+    private val loadingStatusObserver = Observer<Boolean> { isLoading ->
+        when (isLoading) {
+            true -> {
+                showProgressBar()
+                Log.d("CatFact", "LOADING")
+            }
+
+            false ->  {
+                hideProgressBar()
+                Log.d("CatFact", "LOADED")
+            }
         }
     }
 
@@ -99,7 +119,8 @@ class CatsFragment : Fragment() {
 
     private fun subscribeToUI() {
         setListAdapterListener()
-        setButtonListener()
+        setMoreButtonListener()
+        setOneButtonListener()
     }
 
     private fun setListAdapterListener() {
@@ -116,9 +137,15 @@ class CatsFragment : Fragment() {
         findNavController().navigate(direction)
     }
 
-    private fun setButtonListener() {
+    private fun setMoreButtonListener() {
         more_facts_button.setOnClickListener {
             downloadCatFacts()
+        }
+    }
+
+    private fun setOneButtonListener() {
+        one_fact_button.setOnClickListener {
+            viewModel.downloadOneFact()
         }
     }
 

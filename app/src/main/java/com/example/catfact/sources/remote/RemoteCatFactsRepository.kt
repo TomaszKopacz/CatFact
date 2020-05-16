@@ -5,6 +5,7 @@ import com.example.catfact.model.Message
 import com.example.catfact.model.Result
 import com.example.catfact.model.CatFact
 import com.example.catfact.util.network.NetworkManager
+import io.reactivex.Observable
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,6 +59,10 @@ class RemoteCatFactsRepository (
 
     override suspend fun updateAll(catFacts: List<CatFact>) {
         // Do nothing in this case
+    }
+
+    override fun getCat(): Observable<CatFact> {
+        return remoteApi.getOneFact()
     }
 
     companion object {

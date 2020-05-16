@@ -8,6 +8,7 @@ import com.example.catfact.sources.remote.RemoteCatFactsRepository
 import com.example.catfact.util.network.NetworkManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -40,6 +41,7 @@ class RetrofitModule {
         Retrofit
             .Builder()
             .baseUrl(baseUrl)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()

@@ -1,6 +1,7 @@
 package com.example.catfact.sources.remote
 
 import com.example.catfact.model.CatFact
+import io.reactivex.Observable
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,4 +15,7 @@ interface RemoteApi {
         @Query("animal_type") animalType: String,
         @Query("amount") number: Int
     ): Response<List<CatFact>>
+
+    @GET("facts/random?animal_type=cat&amount=1")
+    fun getOneFact(): Observable<CatFact>
 }

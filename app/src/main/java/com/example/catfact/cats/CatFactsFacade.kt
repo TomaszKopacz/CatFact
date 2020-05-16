@@ -8,6 +8,7 @@ import com.example.catfact.di.RemoteRepository
 import com.example.catfact.model.CatFact
 import com.example.catfact.model.Result
 import com.example.catfact.sources.CatFactsRepository
+import io.reactivex.Observable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,6 +22,10 @@ class CatFactsFacade @Inject constructor(
     private val catFacts = MutableLiveData<Result<List<CatFact>>>()
 
     fun catFactsObservable(): LiveData<Result<List<CatFact>>> = catFacts
+
+    fun getOneFact(): Observable<CatFact> {
+        return remoteRepo.getCat()
+    }
 
     suspend fun getCatFacts(number: Int) {
         synchronizeRemoteAndLocalSources(number)
