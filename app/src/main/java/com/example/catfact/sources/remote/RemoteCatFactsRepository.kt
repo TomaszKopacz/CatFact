@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemoteCatFactsRepository @Inject constructor(
+class RemoteCatFactsRepository (
     private val remoteApi: RemoteApi,
     private val networkManager: NetworkManager
 ) : CatFactsRepository {

@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LocalCatFactsRepository @Inject constructor(
+class LocalCatFactsRepository (
     private val catFactsLocalApi: CatFactsLocalApi
 ) : CatFactsRepository {
 
