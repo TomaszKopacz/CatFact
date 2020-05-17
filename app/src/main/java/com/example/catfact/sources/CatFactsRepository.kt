@@ -6,9 +6,5 @@ import io.reactivex.Observable
 
 interface CatFactsRepository {
 
-    suspend fun getAll() : Result<List<CatFact>>
-    suspend fun getSome(number: Int) : Result<List<CatFact>>
-    suspend fun updateAll(catFacts: List<CatFact>)
-
-    fun getCat(): Observable<Result<CatFact>>
+    fun getCatFacts(number: Int) : Observable<Result<List<CatFact>>>
 }

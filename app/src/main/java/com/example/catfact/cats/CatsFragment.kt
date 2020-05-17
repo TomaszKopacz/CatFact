@@ -3,7 +3,6 @@ package com.example.catfact.cats
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +18,6 @@ import com.example.catfact.dialogs.ProgressDialog
 import com.example.catfact.model.CatFact
 import com.example.catfact.model.Result
 import kotlinx.android.synthetic.main.fragment_cats.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CatsFragment : Fragment() {
@@ -66,71 +62,39 @@ class CatsFragment : Fragment() {
     }
 
     private fun subscribeToViewModel() {
-        setRandomCatFactObserver()
         setCatFactsObserver()
         setLoadingObserver()
-        setErrorObserver()
-    }
-
-    private fun setRandomCatFactObserver() {
-        viewModel.randomCatFactObservable().observe(this, randomCatFactObserver)
-    }
-
-    private val randomCatFactObserver = Observer<CatFact> { result ->
-        Toast.makeText(context, result.text, Toast.LENGTH_LONG).show()
     }
 
     private fun setCatFactsObserver() {
-        viewModel.catFactsObservable().observe(this, catFactObserver)
+        viewModel.randomCatFactsData().observe(this, randomCatFactsObserver)
     }
 
-    private val catFactObserver = Observer<Result<List<CatFact>>> { result ->
+    private val randomCatFactsObserver = Observer<Result<List<CatFact>>> { result ->
         when (result) {
-            is Result.Success -> catsIdsAdapter.loadCatFacts(result.data)
-            is Result.Failure -> showMessage(result.message.text)
+            is Result.Success -> {
+                if (result.data != null)
+                    catsIdsAdapter.loadCatFacts(result.data)
+            }
+            is Result.Failure -> showError(result.error.code)
         }
     }
 
     private fun setLoadingObserver() {
-        viewModel.loadingStatusObservable().observe(this, loadingStatusObserver)
+        viewModel.loadingStatusData().observe(this, loadingStatusObserver)
     }
 
     private val loadingStatusObserver = Observer<Boolean> { isLoading ->
         when (isLoading) {
-            true -> {
-                showProgressBar()
-                Log.d("CatFact", "LOADING")
-            }
-
-            false ->  {
-                hideProgressBar()
-                Log.d("CatFact", "LOADED")
-            }
-        }
-    }
-
-    private fun setErrorObserver() {
-        viewModel.errorStatusObservable().observe(this, errorStatusObserver)
-    }
-
-    private val errorStatusObserver = Observer<Boolean> { isError ->
-        when (isError) {
-            true -> {
-                Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show()
-            }
-
-            false ->  {
-                Toast.makeText(context, "NO ERROR", Toast.LENGTH_LONG).show()
-            }
+            true -> showProgressBar()
+            false -> hideProgressBar()
         }
     }
 
     private fun downloadCatFacts() {
-        CoroutineScope(Dispatchers.Main).launch {
-            showProgressBar()
-            viewModel.downloadCatFacts(NUM_OF_FACTS)
-            hideProgressBar()
-        }
+        showProgressBar()
+        viewModel.downloadCatFacts(NUM_OF_FACTS)
+        hideProgressBar()
     }
 
     private fun hideBackButton() {
@@ -146,7 +110,6 @@ class CatsFragment : Fragment() {
     private fun subscribeToUI() {
         setListAdapterListener()
         setMoreButtonListener()
-        setOneButtonListener()
     }
 
     private fun setListAdapterListener() {
@@ -169,18 +132,12 @@ class CatsFragment : Fragment() {
         }
     }
 
-    private fun setOneButtonListener() {
-        one_fact_button.setOnClickListener {
-            viewModel.downloadOneFact()
-        }
-    }
-
     private fun showProgressBar() = ProgressDialog.show(context!!)
 
     private fun hideProgressBar() = ProgressDialog.hide()
 
-    private fun showMessage(message: String) =
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    private fun showError(code: Int) =
+        Toast.makeText(context, "Error! Code: $code", Toast.LENGTH_LONG).show()
 
     companion object {
         private const val NUM_OF_FACTS: Int = 30

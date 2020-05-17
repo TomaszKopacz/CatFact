@@ -54,7 +54,7 @@ class RemoteCatFactsRepositoryTest {
                 .`when`(networkManager.isConnected())
                 .thenReturn(false)
 
-            val result = repository.getSome(NUM_OF_ELEMENTS)
+            val result = repository.getCatFacts(NUM_OF_ELEMENTS)
             assertTrue(result is Result.Failure)
             assertTrue((result as Result.Failure).message == Message(Message.NO_INTERNET_CONNECTION))
         }
@@ -71,7 +71,7 @@ class RemoteCatFactsRepositoryTest {
                 .`when`(api.getSomeFacts(anyString(), anyInt()))
                 .thenReturn(Response.error(ERROR_CODE, apiResponseBody))
 
-            val result = repository.getSome(NUM_OF_ELEMENTS)
+            val result = repository.getCatFacts(NUM_OF_ELEMENTS)
             assertTrue(result is Result.Failure)
             assertTrue((result as Result.Failure).message == Message(Message.REMOTE_DATABASE_QUERY_FAILED))
         }
@@ -82,7 +82,7 @@ class RemoteCatFactsRepositoryTest {
         Mockito.`when`(networkManager.isConnected()).thenReturn(true)
 
         GlobalScope.launch {
-            repository.getSome(NUM_OF_ELEMENTS)
+            repository.getCatFacts(NUM_OF_ELEMENTS)
             Mockito.verify(api).getSomeFacts(ANIMAL_TYPE, NUM_OF_ELEMENTS)
         }
     }
@@ -98,7 +98,7 @@ class RemoteCatFactsRepositoryTest {
                 .`when`(api.getSomeFacts(anyString(), anyInt()))
                 .thenReturn(Response.success(testFacts))
 
-            val result = repository.getSome(NUM_OF_ELEMENTS)
+            val result = repository.getCatFacts(NUM_OF_ELEMENTS)
             assertTrue(result is Result.Success)
             assertTrue((result as Result.Success).data[0] == testFacts[0])
         }

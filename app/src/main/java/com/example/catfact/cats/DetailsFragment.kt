@@ -53,7 +53,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun setChosenCatFactObserver() =
-        viewModel.chosenCatFactObservable().observe(this, chosenCatObserver)
+        viewModel.chosenCatFactData().observe(this, chosenCatObserver)
 
     private val chosenCatObserver = Observer<CatFact> { catFact ->
         showFact(catFact)

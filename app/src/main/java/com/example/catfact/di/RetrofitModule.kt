@@ -8,7 +8,6 @@ import com.example.catfact.sources.remote.RemoteCatFactsRepository
 import com.example.catfact.util.network.NetworkManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -63,11 +62,8 @@ class RetrofitModule {
     @Provides
     @RemoteRepository
     @Singleton
-    fun provideRemoteCatFactsRepository(
-        remoteApi: RemoteApi,
-        networkManager: NetworkManager
-    ): CatFactsRepository =
-        RemoteCatFactsRepository(remoteApi, networkManager)
+    fun provideRemoteCatFactsRepository(remoteApi: RemoteApi): CatFactsRepository =
+        RemoteCatFactsRepository(remoteApi)
 
     companion object {
         private const val API_DATE_FORMAT: String = "yyyy-MM-dd'T'HH:mm:ss"

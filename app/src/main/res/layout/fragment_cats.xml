@@ -10,12 +10,12 @@
         android:id="@+id/cats_ids_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/divider1"
+        android:layout_above="@+id/divider"
         android:layout_marginLeft="@dimen/margin_normal"
         android:layout_marginRight="@dimen/margin_normal"/>
 
     <View
-        android:id="@+id/divider2"
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_size"
         android:background="@color/primaryColor"
@@ -29,21 +29,5 @@
         android:layout_margin="@dimen/margin_normal"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:text="@string/more_facts_button_text"/>
-
-    <View
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_size"
-        android:background="@color/primaryColor"
-        android:layout_above="@+id/one_fact_button"/>
-
-    <Button
-        android:id="@+id/one_fact_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/more_facts_button"
-        android:layout_margin="@dimen/margin_normal"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:text="@string/get_one_fact"/>
 
 </RelativeLayout>

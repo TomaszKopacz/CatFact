@@ -13,7 +13,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import java.sql.Timestamp
 
 class CatsViewModelTest {
 
@@ -41,7 +40,7 @@ class CatsViewModelTest {
         GlobalScope.launch {
             CatsViewModel(catFactsFacade)
 
-            Mockito.verify(catFactsFacade).getCatFacts(NUM_OF_ELEMENTS)
+            Mockito.verify(catFactsFacade).downloadRandomCatFacts(NUM_OF_ELEMENTS)
         }
     }
 
@@ -50,7 +49,7 @@ class CatsViewModelTest {
         GlobalScope.launch {
             catsViewModel.downloadCatFacts(NUM_OF_ELEMENTS)
 
-            Mockito.verify(catFactsFacade).getCatFacts(NUM_OF_ELEMENTS)
+            Mockito.verify(catFactsFacade).downloadRandomCatFacts(NUM_OF_ELEMENTS)
         }
     }
 
@@ -58,7 +57,7 @@ class CatsViewModelTest {
     fun `GIVEN CatsViewModel WHEN cat fact chosen THEN emit cat fact`() {
         catsViewModel.onCatFactChosen(testCatFact)
 
-        catsViewModel.chosenCatFactObservable().observeOnce { catFact ->
+        catsViewModel.chosenCatFactData().observeOnce { catFact ->
             assertTrue(catFact == testCatFact)
         }
     }

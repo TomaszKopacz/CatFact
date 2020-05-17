@@ -10,8 +10,4 @@ annotation class ActivityScope
 
 @Qualifier
 @Retention(value = AnnotationRetention.BINARY)
-annotation class LocalRepository
-
-@Qualifier
-@Retention(value = AnnotationRetention.BINARY)
 annotation class RemoteRepository

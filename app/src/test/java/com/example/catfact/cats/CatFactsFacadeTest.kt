@@ -44,9 +44,9 @@ class CatFactsFacadeTest {
     @Test
     fun `GIVEN CatFactsFacade WHEN getCatFacts() called THEN remote data is fetched`() {
         GlobalScope.launch {
-            catFactsFacade.getCatFacts(NUM_OF_ELEMENTS)
+            catFactsFacade.downloadRandomCatFacts(NUM_OF_ELEMENTS)
 
-            Mockito.verify(remoteRepo).getSome(NUM_OF_ELEMENTS)
+            Mockito.verify(remoteRepo).getCatFacts(NUM_OF_ELEMENTS)
         }
     }
 
@@ -54,10 +54,10 @@ class CatFactsFacadeTest {
     fun `GIVEN CatFactsFacade WHEN getCatFacts() called THEN local data is updated`() {
         GlobalScope.launch {
             Mockito
-                .`when`(remoteRepo.getSome(NUM_OF_ELEMENTS))
+                .`when`(remoteRepo.getCatFacts(NUM_OF_ELEMENTS))
                 .thenReturn(Result.Success(testFactsList))
 
-            catFactsFacade.getCatFacts(NUM_OF_ELEMENTS)
+            catFactsFacade.downloadRandomCatFacts(NUM_OF_ELEMENTS)
 
             Mockito.verify(localRepo).updateAll(testFactsList)
         }
@@ -66,7 +66,7 @@ class CatFactsFacadeTest {
     @Test
     fun `GIVEN CatFactsFacade WHEN getCatFacts() called THEN local data is fetched`() {
         GlobalScope.launch {
-            catFactsFacade.getCatFacts(NUM_OF_ELEMENTS)
+            catFactsFacade.downloadRandomCatFacts(NUM_OF_ELEMENTS)
 
             Mockito.verify(localRepo).getAll()
         }
@@ -76,16 +76,16 @@ class CatFactsFacadeTest {
     fun `GIVEN CatFactsFacade WHEN getCatFacts() called and all repo queries succeed THEN result is Success`() {
         GlobalScope.launch {
             Mockito
-                .`when`(remoteRepo.getSome(NUM_OF_ELEMENTS))
+                .`when`(remoteRepo.getCatFacts(NUM_OF_ELEMENTS))
                 .thenReturn(Result.Success(testFactsList))
 
             Mockito
                 .`when`(localRepo.getAll())
                 .thenReturn(Result.Success(testFactsList))
 
-            catFactsFacade.getCatFacts(NUM_OF_ELEMENTS)
+            catFactsFacade.downloadRandomCatFacts(NUM_OF_ELEMENTS)
 
-            catFactsFacade.catFactsObservable().observeOnce { result ->
+            catFactsFacade.randomCatFactsData().observeOnce { result ->
                 assertTrue(result is Result.Success)
                 assertTrue((result as Result.Success).data[0] == testFactsList[0])
             }
@@ -96,12 +96,12 @@ class CatFactsFacadeTest {
     fun `GIVEN CatFactsFacade WHEN getCatFacts() called and remote repo query failed THEN result is Failure`() {
         GlobalScope.launch {
             Mockito
-                .`when`(remoteRepo.getSome(NUM_OF_ELEMENTS))
+                .`when`(remoteRepo.getCatFacts(NUM_OF_ELEMENTS))
                 .thenReturn(Result.Failure(Message(ERROR_MESSAGE)))
 
-            catFactsFacade.getCatFacts(NUM_OF_ELEMENTS)
+            catFactsFacade.downloadRandomCatFacts(NUM_OF_ELEMENTS)
 
-            catFactsFacade.catFactsObservable().observeOnce { result ->
+            catFactsFacade.randomCatFactsData().observeOnce { result ->
                 assertTrue(result is Result.Failure)
                 assertTrue((result as Result.Failure).message.text == ERROR_MESSAGE)
             }
@@ -112,16 +112,16 @@ class CatFactsFacadeTest {
     fun `GIVEN CatFactsFacade WHEN getCatFacts() called and local repo query failed THEN result is Failure`() {
         GlobalScope.launch {
             Mockito
-                .`when`(remoteRepo.getSome(NUM_OF_ELEMENTS))
+                .`when`(remoteRepo.getCatFacts(NUM_OF_ELEMENTS))
                 .thenReturn(Result.Success(testFactsList))
 
             Mockito
                 .`when`(localRepo.getAll())
                 .thenReturn(Result.Failure(Message(ERROR_MESSAGE)))
 
-            catFactsFacade.getCatFacts(NUM_OF_ELEMENTS)
+            catFactsFacade.downloadRandomCatFacts(NUM_OF_ELEMENTS)
 
-            catFactsFacade.catFactsObservable().observeOnce { result ->
+            catFactsFacade.randomCatFactsData().observeOnce { result ->
                 assertTrue(result is Result.Failure)
                 assertTrue((result as Result.Failure).message.text == ERROR_MESSAGE)
             }

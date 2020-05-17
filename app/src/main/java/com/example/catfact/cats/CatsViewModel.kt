@@ -1,6 +1,5 @@
 package com.example.catfact.cats
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,48 +15,43 @@ class CatsViewModel @Inject constructor(
     private val catFactsFacade: CatFactsFacade
 ) : ViewModel() {
 
-    private val randomCatFact = MutableLiveData<CatFact>()
+    private val randomCatFacts = MutableLiveData<Result<List<CatFact>>>()
     private val chosenCatFact = MutableLiveData<CatFact>()
-    private val loading = MutableLiveData<Boolean>()
-    private val error = MutableLiveData<Boolean>()
 
-    suspend fun downloadCatFacts(number: Int) = catFactsFacade.getCatFacts(number)
+    private val isLoading = MutableLiveData<Boolean>()
 
-    @SuppressLint("CheckResult")
-    fun downloadOneFact() {
-        catFactsFacade.getOneFact()
+    fun downloadCatFacts(number: Int) {
+        catFactsFacade.downloadRandomCatFacts(number)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                loading.postValue(true)
+            .map {
+                emitLoadingStatus(true)
+                it
             }
             .observeOn(Schedulers.io())
-            .map { fact ->
+            .map {
                 Thread.sleep(1000)
-                fact
+                it
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { fact ->
-                loading.postValue(false)
-
-                when (fact) {
-                    is Result.Success -> randomCatFact.postValue(fact.data)
-                    is Result.Failure -> error.postValue(true)
-                }
+            .subscribe { result ->
+                emitLoadingStatus(false)
+                emitRandomCatFacts(result)
             }
     }
 
-    fun randomCatFactObservable(): LiveData<CatFact> = randomCatFact
-
     fun onCatFactChosen(catFact: CatFact) = emitCatFact(catFact)
 
-    fun catFactsObservable(): LiveData<Result<List<CatFact>>> = catFactsFacade.catFactsObservable()
-
-    fun chosenCatFactObservable(): LiveData<CatFact> = chosenCatFact
-
-    fun loadingStatusObservable(): LiveData<Boolean> = loading
-
-    fun errorStatusObservable(): LiveData<Boolean> = error
+    private fun emitRandomCatFacts(result: Result<List<CatFact>>) = randomCatFacts.postValue(result)
 
     private fun emitCatFact(catFact: CatFact) = chosenCatFact.postValue(catFact)
+
+    private fun emitLoadingStatus(status: Boolean) = isLoading.postValue(status)
+
+    fun randomCatFactsData(): LiveData<Result<List<CatFact>>> = randomCatFacts
+
+    fun chosenCatFactData(): LiveData<CatFact> = chosenCatFact
+
+    fun loadingStatusData(): LiveData<Boolean> = isLoading
+
 }
