@@ -66,8 +66,18 @@ class CatsFragment : Fragment() {
     }
 
     private fun subscribeToViewModel() {
+        setRandomCatFactObserver()
         setCatFactsObserver()
         setLoadingObserver()
+        setErrorObserver()
+    }
+
+    private fun setRandomCatFactObserver() {
+        viewModel.randomCatFactObservable().observe(this, randomCatFactObserver)
+    }
+
+    private val randomCatFactObserver = Observer<CatFact> { result ->
+        Toast.makeText(context, result.text, Toast.LENGTH_LONG).show()
     }
 
     private fun setCatFactsObserver() {
@@ -95,6 +105,22 @@ class CatsFragment : Fragment() {
             false ->  {
                 hideProgressBar()
                 Log.d("CatFact", "LOADED")
+            }
+        }
+    }
+
+    private fun setErrorObserver() {
+        viewModel.errorStatusObservable().observe(this, errorStatusObserver)
+    }
+
+    private val errorStatusObserver = Observer<Boolean> { isError ->
+        when (isError) {
+            true -> {
+                Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show()
+            }
+
+            false ->  {
+                Toast.makeText(context, "NO ERROR", Toast.LENGTH_LONG).show()
             }
         }
     }

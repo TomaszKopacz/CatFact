@@ -1,11 +1,14 @@
 package com.example.catfact.sources.remote
 
+import android.util.Log
 import com.example.catfact.sources.CatFactsRepository
 import com.example.catfact.model.Message
 import com.example.catfact.model.Result
 import com.example.catfact.model.CatFact
 import com.example.catfact.util.network.NetworkManager
 import io.reactivex.Observable
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -61,8 +64,24 @@ class RemoteCatFactsRepository (
         // Do nothing in this case
     }
 
-    override fun getCat(): Observable<CatFact> {
-        return remoteApi.getOneFact()
+    override fun getCat(): Observable<Result<CatFact>> {
+        return Observable.create<Result<CatFact>> { emitter ->
+
+            val call = remoteApi.getOneFact()
+
+            call.enqueue(object : Callback<CatFact> {
+
+                override fun onFailure(call: Call<CatFact>, t: Throwable) {
+                    emitter.onNext(Result.Failure(Message("FAILURE")))
+                }
+
+                override fun onResponse(call: Call<CatFact>, response: Response<CatFact>) {
+                    Log.d("CatFact", response.code().toString())
+
+                    emitter.onNext(Result.Success(response.body()!!))
+                }
+            })
+        }
     }
 
     companion object {

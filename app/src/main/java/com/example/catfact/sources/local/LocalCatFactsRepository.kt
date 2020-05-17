@@ -46,7 +46,7 @@ class LocalCatFactsRepository (
         catFactsLocalApi.createAll(catFacts)
     }
 
-    override fun getCat(): Observable<CatFact> {
+    override fun getCat(): Observable<Result<CatFact>> {
         return Observable.create(null)
     }
 }

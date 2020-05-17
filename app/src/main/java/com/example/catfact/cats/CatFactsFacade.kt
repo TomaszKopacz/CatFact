@@ -23,7 +23,7 @@ class CatFactsFacade @Inject constructor(
 
     fun catFactsObservable(): LiveData<Result<List<CatFact>>> = catFacts
 
-    fun getOneFact(): Observable<CatFact> {
+    fun getOneFact(): Observable<Result<CatFact>> {
         return remoteRepo.getCat()
     }
 

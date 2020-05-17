@@ -10,5 +10,5 @@ interface CatFactsRepository {
     suspend fun getSome(number: Int) : Result<List<CatFact>>
     suspend fun updateAll(catFacts: List<CatFact>)
 
-    fun getCat(): Observable<CatFact>
+    fun getCat(): Observable<Result<CatFact>>
 }

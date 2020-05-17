@@ -1,7 +1,6 @@
 package com.example.catfact.cats
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,8 +16,10 @@ class CatsViewModel @Inject constructor(
     private val catFactsFacade: CatFactsFacade
 ) : ViewModel() {
 
+    private val randomCatFact = MutableLiveData<CatFact>()
     private val chosenCatFact = MutableLiveData<CatFact>()
     private val loading = MutableLiveData<Boolean>()
+    private val error = MutableLiveData<Boolean>()
 
     suspend fun downloadCatFacts(number: Int) = catFactsFacade.getCatFacts(number)
 
@@ -33,15 +34,20 @@ class CatsViewModel @Inject constructor(
             .observeOn(Schedulers.io())
             .map { fact ->
                 Thread.sleep(1000)
-                CatFact("MY ID", fact.text, fact.updatedAt)
+                fact
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe { fact ->
                 loading.postValue(false)
-                Log.d("CatFact", "Cat fact id is: " + it.id)
-                Log.d("CatFact", "Cat fact text is: " + it.text)
+
+                when (fact) {
+                    is Result.Success -> randomCatFact.postValue(fact.data)
+                    is Result.Failure -> error.postValue(true)
+                }
             }
     }
+
+    fun randomCatFactObservable(): LiveData<CatFact> = randomCatFact
 
     fun onCatFactChosen(catFact: CatFact) = emitCatFact(catFact)
 
@@ -50,6 +56,8 @@ class CatsViewModel @Inject constructor(
     fun chosenCatFactObservable(): LiveData<CatFact> = chosenCatFact
 
     fun loadingStatusObservable(): LiveData<Boolean> = loading
+
+    fun errorStatusObservable(): LiveData<Boolean> = error
 
     private fun emitCatFact(catFact: CatFact) = chosenCatFact.postValue(catFact)
 }
